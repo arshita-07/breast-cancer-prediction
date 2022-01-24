@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<title>Breast Cancer Prediction</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-black.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+    table
+    {
+      border-collapse: separate;
+      border-spacing: 0 15px;
+    }
+    input
+    {
+      width: 100%;
+      color: black;
+      border: 1px solid #ffb3d9;
+      border-radius: 0.5em;
+    }
+    input[type="submit"]
+    {
+      width: 30%;
+      background-color: #ffb3d9;
+      color: black;
+      border: 1px solid white;
+      border-radius: 0.5em;
+      margin-left: 35%;
+      height: 30px;
+    }
+</style>
+<body>
+
+
+
+<div class="row">
+    <div class="col-sm-4">
+        <img src="{{url_for('static', filename='bg.jpeg')}}" alt="" style="max-width:100%;">
+    </div>
+    <div class="col-sm-8">
+        <div style="padding: 5%;">
+        <br>
+        <h1 style="color: #ff0066; text-align: center;">Breast Cancer Prediction</h1><br>
+        <h2 style="text-align: left;">What is the difference between a Malignant and Benign Tumor?</h2>
+<p style="text-align: justify;">
+    A tumor is an abnormal lump or growth of cells. Sometimes a tumor is made up of cells that aren't a threat to invade other tissues. This is considered benign.
+    <br>
+    When the cells are abnormal and can grow uncontrollably and spread to other parts of the body, they are cancerous cells. That means the tumor is malignant. This spreading process is called metastasis.
+</p>
+<br>
+<h2 style="text-align: left;">What does this application do?</h2>
+<p style="text-align: justify;">With an accuracy of 95%, this application makes use of a trained logistic regression classifier to classify a tumor as malignant or benign. The factors taken into consideration for making the prediction are as follows: radius_se, texture_se, smoothness_se, compactness_se, symmetry_se, fractal_dimension_se, radius_se, texture_se, smoothness_se, compactness_se, symmetry_se and fractal_dimension_se
+<br>After a prediction has been made, this application also allows users to view plotted coordinates for the data entered by them along with the data that has been used to train the classifier. Upon clicking the "Plot graphs" button, users will be able to view the same for each of the above mentioned features against the tumor type [Malignant(1) and Benign(0)]</p>
+    <br>The data used to train the classifier is plotted with blue dots whereas the user specific is marked with a red asterix.</div>
+    </div>
+</div>
+
+<div class="w3-row-padding w3-padding-64 w3-theme-l1">
+<h3>Please enter the following data to predict the tumor type:</h3><br><br><br><br>
+<div style="width: 65%; margin-left: auto; margin-right: auto;">
+<form method="POST">
+    {{ form.csrf_token() }}
+    <table style="width: 100%; margin-left: 5%;">
+        <thead>
+          <th style="width: 50%;"></th>
+          <th style="width: 50%;"></th>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{form.radius_mean.label}}</td>
+                <td>{{form.radius_mean}}</td>
+            </tr>
+            <tr>
+                <td>{{form.texture_mean.label}}</td>
+                <td>{{form.texture_mean}}</td>
+            </tr>
+            <tr>
+                <td>{{form.smoothness_mean.label}}</td>
+                <td>{{form.smoothness_mean}}</td>
+            </tr>
+            <tr>
+                <td>{{form.compactness_mean.label}}</td>
+                <td>{{form.compactness_mean}}</td>
+            </tr>
+            <tr>
+                <td>{{form.symmetry_mean.label}}</td>
+                <td>{{form.symmetry_mean}}</td>
+            </tr>
+            <tr>
+                <td>{{form.fractal_dimension_mean.label}}</td>
+                <td>{{form.fractal_dimension_mean}}</td>
+            </tr>
+            <tr>
+                <td>{{form.radius_se.label}}</td>
+                <td>{{form.radius_se}}</td>
+            </tr>
+            <tr>
+                <td>{{form.texture_se.label}}</td>
+                <td>{{form.texture_se}}</td>
+            </tr>
+            <tr>
+                <td>{{form.smoothness_se.label}}</td>
+                <td>{{form.smoothness_se}}</td>
+            </tr>
+            <tr>
+                <td>{{form.compactness_se.label}}</td>
+                <td>{{form.compactness_se}}</td>
+            </tr>
+            <tr>
+                <td>{{form.symmetry_se.label}}</td>
+                <td>{{form.symmetry_se}}</td>
+            </tr>
+            <tr>
+                <td>{{form.fractal_dimension_se.label}}</td>
+                <td>{{form.fractal_dimension_se}}</td>
+            </tr>
+        </tbody>
+    </table>
+    <br><br>
+    {{form.submit}}
+</form>
+</div>
+</div>
+
+<div style="padding: 5%;">
+    <h1 style="text-align: center; color: #333;">The tumor is most likely {{data}}</h1>
+    <button onclick = "plot()" style="background-color: #333; text-align: center; width: 10%; color: white; border:solid 1px #ffb3d9; border-radius: 0.5em; height: 30px;;">Plot Graphs</button>
+<br><br>
+</div>
+
+<div class="w3-row-padding w3-padding-64 w3-theme-l1" style="display: none;" id="graphs">
+    <h1>Data Visualisation</h1>
+    <p style="padding: 5%;">Here, points plotted against 0 on the x axis denote that the tumor is benign and points plotted against 1 denote that the tumor is malignant.
+       <br>
+       (User input is marked using a red asterix) 
+    </p>
+    <div class="container">
+    <div class="row">
+        <div class="col-lg-4"><img src="{{url_for('static',filename='0.png')}}" alt="" style="max-width: 100%;"></div>
+        <div class="col-lg-4"><img src="{{url_for('static', filename='1.png')}}" alt="" style="max-width: 100%;"></div>
+        <div class="col-lg-4"><img src="{{url_for('static', filename='2.png')}}" alt="" style="max-width: 100%;"></div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-lg-4"><img src="{{url_for('static', filename='3.png')}}" alt="" style="max-width: 100%;"></div>
+        <div class="col-lg-4"><img src="{{url_for('static', filename='4.png')}}" alt="" style="max-width: 100%;"></div>
+        <div class="col-lg-4"><img src="{{url_for('static', filename='5.png')}}" alt="" style="max-width: 100%;"></div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-lg-4"><img src="{{url_for('static', filename='6.png')}}" alt="" style="max-width: 100%;"></div>
+        <div class="col-lg-4"><img src="{{url_for('static', filename='7.png')}}" alt="" style="max-width: 100%;"></div>
+        <div class="col-lg-4"><img src="{{url_for('static', filename='8.png')}}" alt="" style="max-width: 100%;"></div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-lg-4"><img src="{{url_for('static', filename='9.png')}}" alt="" style="max-width: 100%;"></div>
+        <div class="col-lg-4"><img src="{{url_for('static', filename='10.png')}}" alt="" style="max-width: 100%;"></div>
+        <div class="col-lg-4"><img src="{{url_for('static', filename='11.png')}}" alt="" style="max-width: 100%;"></div>
+    </div>
+    </div>
+</div>
+<script>
+    function plot()
+    {
+        document.getElementById("graphs").style.display = 'block';
+        
+    }
+</script>
+</body>
+</html>
